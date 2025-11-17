@@ -15,6 +15,7 @@ import {
   Outlet,
 } from 'react-router-dom';
 import Navbar from './components/navbar';
+import BottomNav from './components/BottomNav';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -22,6 +23,7 @@ root.render(
     <Router>
       <Navbar />
       <App />
+      <BottomNav/>
     </Router>
   </React.StrictMode>
 );

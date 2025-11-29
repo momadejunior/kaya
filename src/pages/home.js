@@ -33,7 +33,7 @@ export default function Home() {
             Entrar
           </a>
         </div>
-        <div className="justify-center md:w-1/2 flex">
+        <div className="justify-center md:w-1/2 flex hidden-on-mobile">
           <img
             src="./mobile-01.png"
             alt="App Preview"

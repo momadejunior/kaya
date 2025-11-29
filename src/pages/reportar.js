@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../utils/supabase";
+import { IoCloudUploadOutline } from "react-icons/io5";
 
 export default function Reportar() {
   const navigate = useNavigate();
@@ -14,9 +15,11 @@ export default function Reportar() {
     idade: "",
     genero: "",
     ultimaLocalizacao: "",
+    ultimaLocalizacaoManual: "",
     descricaoDetalhada: "",
     contacto: "",
     categoria: "",
+    categoriaManual: "",
     foto: null,
   });
 
@@ -45,9 +48,29 @@ export default function Reportar() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { nome, idade, genero, ultimaLocalizacao, descricaoDetalhada, contacto, categoria, foto } = form;
+    const {
+      nome,
+      idade,
+      genero,
+      ultimaLocalizacao,
+      ultimaLocalizacaoManual,
+      descricaoDetalhada,
+      contacto,
+      categoria,
+      categoriaManual,
+      foto,
+    } = form;
 
-    if (!nome || !idade || !genero || !ultimaLocalizacao || !descricaoDetalhada || !contacto || !categoria) {
+    // Validações
+    if (
+      !nome ||
+      !idade ||
+      !genero ||
+      (!ultimaLocalizacao && !ultimaLocalizacaoManual) ||
+      !descricaoDetalhada ||
+      !contacto ||
+      (!categoria && !categoriaManual)
+    ) {
       alert("Por favor, preencha todos os campos obrigatórios.");
       return;
     }
@@ -68,6 +91,11 @@ export default function Reportar() {
       return;
     }
 
+    // Define valores finais
+    const ultimaLocalizacaoFinal =
+      ultimaLocalizacao === "Outro" ? ultimaLocalizacaoManual : ultimaLocalizacao;
+    const categoriaFinal = categoria === "Outro" ? categoriaManual : categoria;
+
     let photoUrl = null;
     try {
       setUploading(true);
@@ -80,7 +108,10 @@ export default function Reportar() {
 
       if (uploadError) throw uploadError;
 
-      const { data: publicUrlData } = supabase.storage.from("missing").getPublicUrl(fileName);
+      const { data: publicUrlData } = supabase.storage
+        .from("missing")
+        .getPublicUrl(fileName);
+
       photoUrl = publicUrlData.publicUrl;
     } catch (error) {
       console.error("Erro no upload da imagem:", error);
@@ -94,11 +125,11 @@ export default function Reportar() {
         nome,
         idade: idadeInt,
         genero,
-        ultima_localizacao: ultimaLocalizacao,
+        ultima_localizacao: ultimaLocalizacaoFinal,
         descricao_detalhada: descricaoDetalhada,
         contacto_do_responsavel: contacto,
         photo_url: photoUrl,
-        category: categoria,
+        category: categoriaFinal,
         reported_by: userId,
       },
     ]);
@@ -117,9 +148,11 @@ export default function Reportar() {
       idade: "",
       genero: "",
       ultimaLocalizacao: "",
+      ultimaLocalizacaoManual: "",
       descricaoDetalhada: "",
       contacto: "",
       categoria: "",
+      categoriaManual: "",
       foto: null,
     });
     setPreview(null);
@@ -127,21 +160,24 @@ export default function Reportar() {
 
   return (
     <div className="max-w-xl mx-auto bg-white shadow-xl rounded-2xl p-6 mt-8">
-      <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
+      <h2 className="text-2xl font-bold mb-6 text-center text-pink-500">
         Reportar Desaparecimento
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-5">
-        {/* Foto */}
+        {/* FOTO */}
         <div>
           <label className="block text-gray-700 font-medium mb-2">Foto *</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleChooseImage}
-            className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0
-              file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-          />
+          <label className="cursor-pointer w-full border-2 border-dashed border-gray-300 rounded-xl p-6 flex flex-col justify-center items-center hover:border-pink-500 transition">
+            <IoCloudUploadOutline className="text-5xl text-pink-400 mb-2" />
+            <span className="text-pink-600 text-sm">Clique para enviar a foto</span>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleChooseImage}
+              className="hidden"
+            />
+          </label>
           {preview && (
             <img
               src={preview}
@@ -151,7 +187,7 @@ export default function Reportar() {
           )}
         </div>
 
-        {/* Nome */}
+        {/* NOME */}
         <div>
           <label className="block text-gray-700 font-medium mb-2">Nome *</label>
           <input
@@ -163,7 +199,7 @@ export default function Reportar() {
           />
         </div>
 
-        {/* Idade */}
+        {/* IDADE */}
         <div>
           <label className="block text-gray-700 font-medium mb-2">Idade *</label>
           <input
@@ -176,7 +212,7 @@ export default function Reportar() {
           />
         </div>
 
-        {/* Gênero */}
+        {/* GÊNERO */}
         <div>
           <label className="block text-gray-700 font-medium mb-2">Gênero *</label>
           <select
@@ -193,11 +229,9 @@ export default function Reportar() {
           </select>
         </div>
 
-        {/* Última Localização */}
+        {/* ÚLTIMA LOCALIZAÇÃO */}
         <div>
-          <label className="block text-gray-700 font-medium mb-2">
-            Última Localização *
-          </label>
+          <label className="block text-gray-700 font-medium mb-2">Última Localização *</label>
           <select
             name="ultimaLocalizacao"
             value={form.ultimaLocalizacao}
@@ -212,13 +246,22 @@ export default function Reportar() {
             <option value="Gaza">Gaza</option>
             <option value="Outro">Outro</option>
           </select>
+
+          {form.ultimaLocalizacao === "Outro" && (
+            <input
+              placeholder="Digite a localização manualmente"
+              value={form.ultimaLocalizacaoManual}
+              onChange={(e) =>
+                setForm((prev) => ({ ...prev, ultimaLocalizacaoManual: e.target.value }))
+              }
+              className="w-full mt-2 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400"
+            />
+          )}
         </div>
 
-        {/* Descrição */}
+        {/* DESCRIÇÃO */}
         <div>
-          <label className="block text-gray-700 font-medium mb-2">
-            Descrição Detalhada *
-          </label>
+          <label className="block text-gray-700 font-medium mb-2">Descrição Detalhada *</label>
           <textarea
             name="descricaoDetalhada"
             value={form.descricaoDetalhada}
@@ -229,11 +272,9 @@ export default function Reportar() {
           />
         </div>
 
-        {/* Contacto */}
+        {/* CONTACTO */}
         <div>
-          <label className="block text-gray-700 font-medium mb-2">
-            Contacto do Responsável *
-          </label>
+          <label className="block text-gray-700 font-medium mb-2">Contacto do Responsável *</label>
           <input
             name="contacto"
             type="tel"
@@ -244,7 +285,7 @@ export default function Reportar() {
           />
         </div>
 
-        {/* Categoria */}
+        {/* CATEGORIA */}
         <div>
           <label className="block text-gray-700 font-medium mb-2">Categoria *</label>
           <select
@@ -255,27 +296,39 @@ export default function Reportar() {
             required
           >
             <option value="">Selecione uma categoria</option>
-            <option value="criança">Criança</option>
-            <option value="adulto">Adulto</option>
-            <option value="idoso">Idoso</option>
-            <option value="rapto">Rapto</option>
-            <option value="outro">Outro</option>
+            <option value="Criança">Criança</option>
+            <option value="Adolescente">Adolescente</option>
+            <option value="Adulto">Adulto</option>
+            <option value="Idoso">Idoso</option>
+            <option value="Rapto">Rapto</option>
+            <option value="Outro">Outro</option>
           </select>
+
+          {form.categoria === "Outro" && (
+            <input
+              placeholder="Digite a categoria"
+              value={form.categoriaManual}
+              onChange={(e) =>
+                setForm((prev) => ({ ...prev, categoriaManual: e.target.value }))
+              }
+              className="w-full mt-2 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400"
+            />
+          )}
         </div>
 
-        {/* Botão */}
+        {/* BOTÃO */}
         <button
           type="submit"
           disabled={uploading}
           className={`w-full py-3 rounded-lg text-white font-semibold transition-all ${
-            uploading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
+            uploading ? "bg-pink-400 cursor-not-allowed" : "bg-pink-600 hover:bg-pink-700"
           }`}
         >
           {uploading ? "Publicando..." : "Publicar"}
         </button>
       </form>
 
-      {/* Modal de Login */}
+      {/* MODAL DE LOGIN */}
       {showLoginModal && (
         <div className="fixed inset-0 bg-black/50 flex justify-center items-center">
           <div className="bg-white rounded-xl shadow-lg p-6 max-w-sm w-full text-center">

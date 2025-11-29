@@ -3,7 +3,7 @@ import {
   IoHomeOutline,
   IoNotificationsOutline,
   IoPersonCircleOutline,
-  IoSettingsOutline,
+  IoReceiptOutline
 } from "react-icons/io5";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -30,7 +30,7 @@ export default function BottomNav() {
   if (!userId) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-md flex justify-around py-2">
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-md flex justify-around py-2" id="BottomNav">
       <BottomButton icon={<IoHomeOutline size={24} />} text="Início" onClick={() => navigate("/feed")} />
 
       <BottomButton
@@ -40,16 +40,18 @@ export default function BottomNav() {
       />
 
       <BottomButton
+        icon={<IoReceiptOutline size={24} />}
+        text="Reportar"
+        onClick={() => navigate(`/reportar`)}
+      />
+
+      <BottomButton
         icon={<IoPersonCircleOutline size={24} />}
         text="Perfil"
         onClick={() => navigate(`/perfil/`)}
       />
 
-      <BottomButton
-        icon={<IoSettingsOutline size={24} />}
-        text="Config"
-        onClick={() => navigate(`/perfil/${userId}/editar`)}
-      />
+      
     </div>
   );
 }

@@ -208,7 +208,7 @@ Status: ${person.status || "Ativo"}`,
       </div>
 
       {/* Filtros de categoria */}
-      <div style={{ display: "flex", overflowX: "auto", padding: "0 16px", marginBottom: 8 }}>
+      <div style={{ display: "flex", overflowX: "auto", padding: "0 16px", marginBottom: 8 }} className="hide-scrollbar">
         {categories.map((cat) => (
           <button
             key={cat}
@@ -230,7 +230,7 @@ Status: ${person.status || "Ativo"}`,
       </div>
 
       {/* Filtros de status */}
-      <div style={{ display: "flex", overflowX: "auto", padding: "0 16px", marginBottom: 12 }}>
+      <div style={{ display: "flex", overflowX: "auto", padding: "0 16px", marginBottom: 24 }} className="hide-scrollbar">
         {statuses.map((st) => (
           <button
             key={st}

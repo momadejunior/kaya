@@ -7,14 +7,38 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* global.css ou App.css */
+.hide-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari e Edge */
+}
+
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
 
+ #BottomNav{
+    display:none;
+  }
+
 @media(max-width:600px){
   #navbar{
     display: none;
+  }
+
+  .hidden-on-mobile{
+  display: none;
+
+}
+
+  #BottomNav{
+    display: flex;
   }
 }
 

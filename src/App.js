@@ -18,6 +18,7 @@ import Notificacoes from './pages/notificacao';
 import EditarPerfil from './pages/editar';
 
 
+
 export default function App() {
   return (
     <Routes>
@@ -34,9 +35,11 @@ export default function App() {
       <Route path="feed/:id/detalhes" element={<Detalhes />} />
       <Route path="/reportar" element={<Reportar />} />
       <Route path="/game" element={<Soccer3v3 />} />
-       <Route path="/sobre" element={<AboutApp />} />
-       <Route path="/perfil/:id/Notificacoes" element={<Notificacoes />} />
-        <Route path="/perfil/:id/editar" element={<EditarPerfil />} />
+      <Route path="/sobre" element={<AboutApp />} />
+      <Route path="/perfil/:id/Notificacoes" element={<Notificacoes />} />
+      <Route path="/perfil/:id/editar" element={<EditarPerfil />} />
+      <Route path="/reportar" element={<EditarPerfil />} />
+
 
     </Routes>
   );

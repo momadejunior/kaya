@@ -118,7 +118,7 @@ export default function Navbar() {
             )}
           </div>
         ) : (
-          <span className="bg-pink-500 text-white rounded p-2">
+          <span className="bg-pink-600 text-white rounded p-2 hover:bg-pink-700 transition">
             <Link to="/signin" className="hover:text-white font-medium">Entrar</Link>
           </span>
         )}

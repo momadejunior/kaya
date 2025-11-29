@@ -1,3 +1,4 @@
+import BottomNav from "../components/BottomNav";
 import { supabase } from "../utils/supabase";
 import { useEffect, useState } from "react";
 
@@ -71,6 +72,8 @@ export default function Notificacoes() {
   };
 
   return (
+
+    <>
     <div style={{ flex: 1 }}>
       <button
         onClick={clearRecords}
@@ -175,5 +178,9 @@ export default function Notificacoes() {
         ))}
       </div>
     </div>
+
+    <BottomNav />
+
+    </>
   );
 }

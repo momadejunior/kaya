@@ -32,6 +32,10 @@ code {
     display: none;
   }
 
+  body{
+    margin-bottom: 60px;
+  }
+
   .hidden-on-mobile{
   display: none;
 

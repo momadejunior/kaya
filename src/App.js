@@ -16,7 +16,7 @@ import Soccer3v3 from './pages/game';
 import AboutApp from './pages/sobre';
 import Notificacoes from './pages/notificacao';
 import EditarPerfil from './pages/editar';
-
+import ResetPassword from './pages/resetPassword';
 
 
 export default function App() {
@@ -39,6 +39,8 @@ export default function App() {
       <Route path="/perfil/:id/Notificacoes" element={<Notificacoes />} />
       <Route path="/perfil/:id/editar" element={<EditarPerfil />} />
       <Route path="/reportar" element={<EditarPerfil />} />
+      <Route path="/redefinir-password" element={<ResetPassword />} />
+      
 
 
     </Routes>

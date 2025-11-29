@@ -1,16 +1,15 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../utils/supabase";
 import { useNavigate, Link } from "react-router-dom";
+import { IoPersonCircleOutline } from "react-icons/io5"; // ⬅ ícone novo
 
 export default function SignIn() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [resetting, setResetting] = useState(false);
   const mainColor = "#d91c5c";
 
-  // Verifica se já há sessão ativa
   useEffect(() => {
     const checkSession = async () => {
       const { data } = await supabase.auth.getSession();
@@ -21,7 +20,6 @@ export default function SignIn() {
     checkSession();
   }, [navigate]);
 
-  // Login
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -31,11 +29,13 @@ export default function SignIn() {
     }
 
     setLoading(true);
+
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email: email.trim().toLowerCase(),
         password,
       });
+
       if (error) throw error;
 
       if (data.user) {
@@ -45,35 +45,9 @@ export default function SignIn() {
       }
     } catch (err) {
       console.error("Erro no Login:", err);
-      alert(err?.message || "Não foi possível entrar.");
+      alert(err.message || "Não foi possível entrar.");
     } finally {
       setLoading(false);
-    }
-  };
-
-  // Redefinir senha
-  const handleForgotPassword = async () => {
-    if (!email) {
-      alert("Digite seu e-mail para redefinir a senha.");
-      return;
-    }
-
-    setResetting(true);
-    try {
-      const { error } = await supabase.auth.resetPasswordForEmail(
-        email.trim().toLowerCase(),
-        {
-          redirectTo: "https://www.vuyakaya.online/update-password",
-        }
-      );
-      if (error) throw error;
-
-      alert("Verifique o seu e-mail para redefinir a senha.");
-    } catch (err) {
-      console.error("Erro ao redefinir senha:", err);
-      alert(err?.message || "Erro ao enviar e-mail de redefinição.");
-    } finally {
-      setResetting(false);
     }
   };
 
@@ -83,14 +57,21 @@ export default function SignIn() {
         onSubmit={handleLogin}
         className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md"
       >
+        {/* Header */}
         <div className="text-center mb-6">
-          <div style={{ fontSize: "3rem", color: mainColor }}>👤</div>
+          <IoPersonCircleOutline
+            size={70}
+            color={mainColor}
+            className="mx-auto"
+          />
+
           <h1 className="text-2xl font-bold mt-4 text-gray-800">
             Bem-vindo de volta!
           </h1>
           <p className="text-gray-600 mt-1">Faça login para continuar</p>
         </div>
 
+        {/* Email */}
         <label className="block font-semibold mb-1">E-mail</label>
         <input
           type="email"
@@ -100,6 +81,7 @@ export default function SignIn() {
           onChange={(e) => setEmail(e.target.value)}
         />
 
+        {/* Password */}
         <label className="block font-semibold mb-1">Senha</label>
         <input
           type="password"
@@ -109,6 +91,7 @@ export default function SignIn() {
           onChange={(e) => setPassword(e.target.value)}
         />
 
+        {/* Login Button */}
         <button
           type="submit"
           disabled={loading}
@@ -121,27 +104,28 @@ export default function SignIn() {
           {loading ? "Entrando..." : "Login"}
         </button>
 
+        {/* Redefinir senha */}
         <div className="text-center mt-4">
-          <button
-            type="button"
-            onClick={handleForgotPassword}
-            disabled={resetting}
-            className="text-gray-500"
-          >
+          <Link to="/redefinir-password" className="text-gray-500">
             Esqueceste a senha?{" "}
             <span
-              style={{ color: mainColor, fontWeight: "600", cursor: "pointer" }}
+              style={{
+                color: mainColor,
+                fontWeight: "600",
+                cursor: "pointer",
+              }}
             >
               Redefinir
             </span>
-          </button>
+          </Link>
         </div>
 
+        {/* Criar conta */}
         <p className="text-center text-gray-500 mt-6">
           Ainda não tens conta?{" "}
           <Link
             to="/signup"
-            style={{ color: mainColor, fontWeight: "600", cursor: "pointer" }}
+            style={{ color: mainColor, fontWeight: "600" }}
           >
             Criar conta
           </Link>

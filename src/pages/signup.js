@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { supabase } from "../utils/supabase";
 import { useNavigate } from "react-router-dom";
+import { IoImageOutline } from "react-icons/io5";
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -14,7 +15,6 @@ export default function SignUp() {
   const [emailSent, setEmailSent] = useState(false);
   const mainColor = "#d91c5c";
 
-  // Capturar imagem do input
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) setImage(file);
@@ -43,13 +43,9 @@ export default function SignUp() {
 
       // 2️⃣ Upload da foto
       const fileName = `avatars/${user.id}.jpg`;
-      const { data: uploadData, error: uploadError } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from("avatars")
-        .upload(fileName, image, {
-          cacheControl: "3600",
-          upsert: true,
-          contentType: image.type,
-        });
+        .upload(fileName, image, { cacheControl: "3600", upsert: true, contentType: image.type });
       if (uploadError) throw uploadError;
 
       const { data: publicUrlData } = supabase.storage.from("avatars").getPublicUrl(fileName);
@@ -87,13 +83,8 @@ export default function SignUp() {
         </p>
         <button
           onClick={() => navigate("/signin")}
-          style={{
-            backgroundColor: mainColor,
-            color: "#fff",
-            padding: "10px 20px",
-            borderRadius: "12px",
-            fontWeight: "bold",
-          }}
+          className="px-6 py-2 rounded-xl font-bold text-white"
+          style={{ backgroundColor: mainColor }}
         >
           Voltar para Login
         </button>
@@ -105,12 +96,13 @@ export default function SignUp() {
     <div className="min-h-screen bg-gray-50 flex justify-center items-center p-6">
       <form
         onSubmit={handleSignUp}
-        className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md"
+        className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md space-y-4"
       >
-        <h1 className="text-2xl font-bold text-center mb-6" style={{ color: mainColor }}>
+        <h1 className="text-2xl font-bold text-center mb-4" style={{ color: mainColor }}>
           Criar Conta
         </h1>
 
+        {/* Upload de imagem */}
         <div className="flex flex-col items-center mb-4">
           <label htmlFor="photo" className="cursor-pointer">
             {image ? (
@@ -121,10 +113,10 @@ export default function SignUp() {
               />
             ) : (
               <div
-                className="w-28 h-28 rounded-full bg-pink-200 flex items-center justify-center text-white text-3xl"
+                className="w-28 h-28 rounded-full bg-gray-200 flex items-center justify-center text-white text-4xl"
                 style={{ backgroundColor: mainColor }}
               >
-                📷
+                <IoImageOutline />
               </div>
             )}
           </label>
@@ -135,67 +127,90 @@ export default function SignUp() {
             onChange={handleImageChange}
             className="hidden"
           />
+          <span className="text-gray-500 mt-2 text-sm">Clique para selecionar uma foto</span>
         </div>
 
-        <label className="block font-semibold mb-1">Nome</label>
-        <input
-          type="text"
-          className="border rounded-lg p-2 w-full mb-3"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+        {/* Nome */}
+        <div className="flex flex-col">
+          <label htmlFor="name" className="font-semibold mb-1 text-gray-700">Nome</label>
+          <input
+            type="text"
+            id="name"
+            placeholder="Digite seu nome"
+            className="border border-gray-300 rounded-lg p-2 w-full placeholder-gray-400 focus:ring-2 focus:ring-pink-300"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>
 
-        <label className="block font-semibold mb-1">E-mail</label>
-        <input
-          type="email"
-          className="border rounded-lg p-2 w-full mb-3"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        {/* E-mail */}
+        <div className="flex flex-col">
+          <label htmlFor="email" className="font-semibold mb-1 text-gray-700">E-mail</label>
+          <input
+            type="email"
+            id="email"
+            placeholder="Digite seu e-mail"
+            className="border border-gray-300 rounded-lg p-2 w-full placeholder-gray-400 focus:ring-2 focus:ring-pink-300"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
 
-        <label className="block font-semibold mb-1">Telefone</label>
-        <input
-          type="tel"
-          className="border rounded-lg p-2 w-full mb-3"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-        />
+        {/* Telefone */}
+        <div className="flex flex-col">
+          <label htmlFor="phone" className="font-semibold mb-1 text-gray-700">Telefone</label>
+          <input
+            type="tel"
+            id="phone"
+            placeholder="Digite seu telefone"
+            className="border border-gray-300 rounded-lg p-2 w-full placeholder-gray-400 focus:ring-2 focus:ring-pink-300"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+          />
+        </div>
 
-        <label className="block font-semibold mb-1">Localização</label>
-        <select
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-          className="border rounded-lg p-2 w-full mb-3"
-        >
-          <option>Maputo Cidade</option>
-          <option>Maputo Província</option>
-          <option>Gaza</option>
-          <option>Inhambane</option>
-          <option>Sofala</option>
-          <option>Manica</option>
-          <option>Tete</option>
-          <option>Zambézia</option>
-          <option>Nampula</option>
-          <option>Cabo Delgado</option>
-          <option>Niassa</option>
-        </select>
+        {/* Localização */}
+        <div className="flex flex-col">
+          <label htmlFor="location" className="font-semibold mb-1 text-gray-700">Localização</label>
+          <select
+            id="location"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            className="border border-gray-300 rounded-lg p-2 w-full placeholder-gray-400 focus:ring-2 focus:ring-pink-300"
+          >
+            <option>Maputo Cidade</option>
+            <option>Maputo Província</option>
+            <option>Gaza</option>
+            <option>Inhambane</option>
+            <option>Sofala</option>
+            <option>Manica</option>
+            <option>Tete</option>
+            <option>Zambézia</option>
+            <option>Nampula</option>
+            <option>Cabo Delgado</option>
+            <option>Niassa</option>
+          </select>
+        </div>
 
-        <label className="block font-semibold mb-1">Senha</label>
-        <input
-          type="password"
-          className="border rounded-lg p-2 w-full mb-3"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        {/* Senha */}
+        <div className="flex flex-col">
+          <label htmlFor="password" className="font-semibold mb-1 text-gray-700">Senha</label>
+          <input
+            type="password"
+            id="password"
+            placeholder="Digite sua senha"
+            className="border border-gray-300 rounded-lg p-2 w-full placeholder-gray-400 focus:ring-2 focus:ring-pink-300"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
 
         <button
           type="submit"
           disabled={loading}
-          className="w-full text-white font-bold py-2 rounded-lg mt-2"
-          style={{
-            backgroundColor: loading ? "#ccc" : mainColor,
-            cursor: loading ? "not-allowed" : "pointer",
-          }}
+          className={`w-full text-white font-bold py-2 rounded-lg mt-2 ${
+            loading ? "bg-gray-400 cursor-not-allowed" : "bg-pink-600 hover:bg-pink-700"
+          }`}
         >
           {loading ? "Criando conta..." : "Criar conta"}
         </button>

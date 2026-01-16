@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import {Routes, Route } from 'react-router-dom';
 import ConfirmEmail from './pages/confirm';
 import UpdatePasswordPage from './pages/update-password';
 import Home from './pages/home';

@@ -6,13 +6,6 @@ import reportWebVitals from './reportWebVitals';
 
 import {
   BrowserRouter as Router,
-  Routes,
-  Route,
-  Link,
-  Navigate,
-  useParams,
-  useNavigate,
-  Outlet,
 } from 'react-router-dom';
 import Navbar from './components/navbar';
 import BottomNav from './components/BottomNav';

@@ -1,16 +1,14 @@
 // components/MyPosts.jsx
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "../utils/supabase";
 import { IoHeartOutline, IoHeart, IoChatbubbleOutline } from "react-icons/io5";
 import SharePersonButton from "../components/ShareButton";
 import CommentsSection from "../components/CommentsSection";
 
-
 export default function MyPosts() {
   const [userId, setUserId] = useState(null);
   const [myPosts, setMyPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
 
   // Modal
   const [modalVisible, setModalVisible] = useState(false);
@@ -29,9 +27,8 @@ export default function MyPosts() {
   }, []);
 
   // Buscar publicações do usuário
-  const fetchMyPosts = async () => {
+  const fetchMyPosts = useCallback(async () => {
     if (!userId) return;
-    setRefreshing(true);
 
     const { data: posts, error } = await supabase
       .from("missing_people")
@@ -42,7 +39,6 @@ export default function MyPosts() {
     if (error) {
       console.error("Erro ao buscar publicações:", error);
       setMyPosts([]);
-      setRefreshing(false);
       return;
     }
 
@@ -81,12 +77,11 @@ export default function MyPosts() {
     );
 
     setMyPosts(postsWithCounts);
-    setRefreshing(false);
-  };
+  }, [userId]);
 
   useEffect(() => {
     if (userId) fetchMyPosts();
-  }, [userId]);
+  }, [userId, fetchMyPosts]);
 
   // Like / Deslike
   const handleLike = async (post) => {
@@ -160,7 +155,6 @@ export default function MyPosts() {
 
   return (
     <div className="p-4 mt-4">
-      
       {myPosts.map((post) => (
         <div
           key={post.id}
@@ -172,7 +166,6 @@ export default function MyPosts() {
             boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
             position: "relative",
           }}
-
           className="m-auto md:w-1/2 sm:1/1"
         >
           {post.photo_url && (

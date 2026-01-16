@@ -101,6 +101,14 @@ export default function Navbar() {
                 </Link>
 
                 <Link
+                  to={`/Reportar/`}
+                  className="block px-4 py-2 hover:bg-gray-100"
+                  onClick={() => setDropdownOpen(false)}
+                >
+                 Reportar
+                </Link>
+
+                <Link
                   to={`/perfil/${user.id}/Notificacoes`}
                   className="block px-4 py-2 hover:bg-gray-100"
                   onClick={() => setDropdownOpen(false)}

@@ -9,7 +9,6 @@ import {
   IoTrashOutline,
   IoPersonOutline,
   IoCallOutline,
-  IoInformationCircleOutline,
   IoSearchOutline,
   IoSparkles
 } from "react-icons/io5";

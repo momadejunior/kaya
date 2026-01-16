@@ -1,13 +1,13 @@
 import BottomNav from "../components/BottomNav";
 import { supabase } from "../utils/supabase";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 export default function Notificacoes() {
   const [people, setPeople] = useState([]);
   const [loading, setLoading] = useState(true);
   const [cleared, setCleared] = useState(false);
 
-  const fetchMissingPeople = async () => {
+  const fetchMissingPeople = useCallback(async () => {
     if (cleared) return;
     setLoading(true);
 
@@ -24,11 +24,11 @@ export default function Notificacoes() {
     }
 
     setLoading(false);
-  };
+  }, [cleared]);
 
   useEffect(() => {
     fetchMissingPeople();
-  }, []);
+  }, [fetchMissingPeople]);
 
   const clearRecords = () => {
     const confirmClear = window.confirm(
@@ -43,7 +43,12 @@ export default function Notificacoes() {
   if (loading)
     return (
       <div
-        style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center" }}
+        style={{
+          flex: 1,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
       >
         <p style={{ color: "#d91c5c" }}>Carregando...</p>
       </div>
@@ -52,7 +57,12 @@ export default function Notificacoes() {
   if (people.length === 0 || cleared)
     return (
       <div
-        style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center" }}
+        style={{
+          flex: 1,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
       >
         <p style={{ color: "#999" }}>Nenhuma notificação disponível</p>
       </div>
@@ -72,115 +82,115 @@ export default function Notificacoes() {
   };
 
   return (
-
     <>
-    <div style={{ flex: 1 }}>
-      <button
-        onClick={clearRecords}
-        style={{
-          padding: 10,
-          backgroundColor: "#d91c5c",
-          margin: 16,
-          borderRadius: 8,
-          border: "none",
-          cursor: "pointer",
-          color: "#fff",
-          fontWeight: "bold",
-          width: "calc(100% - 32px)",
-        }}
-      >
-        Limpar Notificações
-      </button>
+      <div style={{ flex: 1 }}>
+        <button
+          onClick={clearRecords}
+          style={{
+            padding: 10,
+            backgroundColor: "#d91c5c",
+            margin: 16,
+            borderRadius: 8,
+            border: "none",
+            cursor: "pointer",
+            color: "#fff",
+            fontWeight: "bold",
+            width: "calc(100% - 32px)",
+          }}
+        >
+          Limpar Notificações
+        </button>
 
-      <div style={{ padding: 16 }}>
-        {people.map((item) => (
-          <div
-            key={item.id}
-            style={{
-              padding: 12,
-              backgroundColor: "#fff",
-              borderRadius: 8,
-              marginBottom: 12,
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "flex-start",
-              gap: 10,
-            }}
-          >
-            {/* Foto */}
-            {item.photo_url ? (
-              <img
-                src={item.photo_url}
-                alt="Foto"
-                style={{ width: 60, height: 60, borderRadius: 8, objectFit: "cover" }}
-              />
-            ) : (
-              <div
-                style={{
-                  width: 60,
-                  height: 60,
-                  borderRadius: 8,
-                  backgroundColor: "#eee",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <span style={{ color: "#999", fontSize: 12 }}>Sem Foto</span>
-              </div>
-            )}
-
-            <div style={{ flex: 1 }}>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <p style={{ fontWeight: "bold", fontSize: 16, margin: 0 }}>
-                  {item.nome}
-                </p>
-
+        <div style={{ padding: 16 }}>
+          {people.map((item) => (
+            <div
+              key={item.id}
+              style={{
+                padding: 12,
+                backgroundColor: "#fff",
+                borderRadius: 8,
+                marginBottom: 12,
+                display: "flex",
+                gap: 10,
+              }}
+            >
+              {item.photo_url ? (
+                <img
+                  src={item.photo_url}
+                  alt="Foto"
+                  style={{
+                    width: 60,
+                    height: 60,
+                    borderRadius: 8,
+                    objectFit: "cover",
+                  }}
+                />
+              ) : (
                 <div
                   style={{
-                    padding: "2px 6px",
-                    borderRadius: 4,
-                    backgroundColor: getStatusColor(item.status),
+                    width: 60,
+                    height: 60,
+                    borderRadius: 8,
+                    backgroundColor: "#eee",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
                 >
+                  <span style={{ color: "#999", fontSize: 12 }}>
+                    Sem Foto
+                  </span>
+                </div>
+              )}
+
+              <div style={{ flex: 1 }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <p style={{ fontWeight: "bold", margin: 0 }}>
+                    {item.nome}
+                  </p>
+
                   <span
                     style={{
+                      backgroundColor: getStatusColor(item.status),
                       color: "#fff",
                       fontSize: 10,
+                      padding: "2px 6px",
+                      borderRadius: 4,
                       fontWeight: "bold",
                     }}
                   >
                     {item.status ?? "Desconhecido"}
                   </span>
                 </div>
+
+                {item.descricao_detalhada && (
+                  <p style={{ marginTop: 4 }}>
+                    {item.descricao_detalhada}
+                  </p>
+                )}
+
+                <p style={{ fontSize: 12, color: "#666" }}>
+                  {item.idade ? `${item.idade} anos, ` : ""}
+                  {item.genero ?? ""}
+                </p>
+
+                <p style={{ fontSize: 10, color: "#999" }}>
+                  {item.ultima_localizacao ??
+                    "Localização não informada"}
+                </p>
               </div>
-
-              {item.descricao_detalhada && (
-                <p style={{ marginTop: 4 }}>{item.descricao_detalhada}</p>
-              )}
-
-              <p style={{ fontSize: 12, color: "#666", marginTop: 4 }}>
-                {item.idade ? `${item.idade} anos, ` : ""}
-                {item.genero ?? ""}
-              </p>
-
-              <p style={{ fontSize: 10, color: "#999", marginTop: 2 }}>
-                {item.ultima_localizacao ?? "Localização não informada"}
-              </p>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
 
-    <BottomNav />
-
+      <BottomNav />
     </>
   );
 }
